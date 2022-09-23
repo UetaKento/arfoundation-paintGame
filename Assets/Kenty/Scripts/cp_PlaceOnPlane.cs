@@ -30,9 +30,6 @@ namespace UnityEngine.XR.ARFoundation.Samples
         [SerializeField]
         Text scoreText;
 
-        //[SerializeField]
-        //ARPlaneManager arPlaneManager;
-        
         /// <summary>
         /// The prefab to instantiate on touch.
         /// </summary>
@@ -46,6 +43,22 @@ namespace UnityEngine.XR.ARFoundation.Samples
         /// The object instantiated as a result of a successful raycast intersection with a plane.
         /// </summary>
         public GameObject spawnedObject { get; private set; }
+
+        private string m_Shape;
+
+        public string Shape
+        {
+            get { return m_Shape; }
+            set { m_Shape = value; }
+        }
+
+        private string m_Color;
+
+        public string Color
+        {
+            get { return m_Color; }
+            set { m_Color = value; }
+        }
 
         void Awake()
         {
@@ -63,7 +76,9 @@ namespace UnityEngine.XR.ARFoundation.Samples
             touchPosition = default;
             return false;
         }
-
+        //色(Red、Blue、Yellow)と形(丸、三角、四角)はボタンで変える
+        //丸はRedと相性がよく、三角はBlueと相性がよく、四角はYellowと相性がよい
+        //
         void Update()
         {
             //PlaneDetectionMode currentDetectionMode = new ARPlaneManager().detectionMode;
