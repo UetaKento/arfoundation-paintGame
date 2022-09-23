@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.ARFoundation.Samples;
 
 public class ShapeManager : MonoBehaviour
 {
@@ -14,5 +15,23 @@ public class ShapeManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void OnCircleButton()
+    {
+        cp_PlaceOnPlane placeOnPlane = new cp_PlaceOnPlane();
+        placeOnPlane.Shape = "Circle";
+    }
+
+    public void OnTriangleButton()
+    {
+        cp_PlaceOnPlane placeOnPlane = new cp_PlaceOnPlane();
+        placeOnPlane.Shape = "Triangle";
+    }
+
+    public void OnSquareButton()
+    {
+        cp_PlaceOnPlane placeOnPlane = new cp_PlaceOnPlane();
+        placeOnPlane.Shape = "Square";
     }
 }

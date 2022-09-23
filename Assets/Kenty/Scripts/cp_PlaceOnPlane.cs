@@ -44,14 +44,6 @@ namespace UnityEngine.XR.ARFoundation.Samples
         /// </summary>
         public GameObject spawnedObject { get; private set; }
 
-        private string m_Shape;
-
-        public string Shape
-        {
-            get { return m_Shape; }
-            set { m_Shape = value; }
-        }
-
         private string m_Color;
 
         public string Color
@@ -60,9 +52,19 @@ namespace UnityEngine.XR.ARFoundation.Samples
             set { m_Color = value; }
         }
 
+        private string m_Shape;
+
+        public string Shape
+        {
+            get { return m_Shape; }
+            set { m_Shape = value; }
+        }
+
         void Awake()
         {
             m_RaycastManager = GetComponent<ARRaycastManager>();
+            m_Color = "Blue";
+            m_Shape = "Circle";
         }
 
         bool TryGetTouchPosition(out Vector2 touchPosition)
@@ -76,6 +78,44 @@ namespace UnityEngine.XR.ARFoundation.Samples
             touchPosition = default;
             return false;
         }
+
+        private string CombineColorShape(string color, string shape)
+        {
+            if (color == "Red" || shape == "Circle")
+            {
+                return "RedCircle";
+            }else if (color == "Red" || shape == "Triangle")
+            {
+                return "RedTriangle";
+            }else if (color == "Red" || shape == "Square")
+            {
+                return "RedSquare";
+            }else if (color == "Blue" || shape == "Circle")
+            {
+                return "BlueCircle";
+            }
+            else if (color == "Blue" || shape == "Triangle")
+            {
+                return "BlueTriangle";
+            }
+            else if (color == "Blue" || shape == "Square")
+            {
+                return "BlueSquare";
+            }else if (color == "Yellow" || shape == "Circle")
+            {
+                return "YellowCircle";
+            }
+            else if (color == "Yellow" || shape == "Triangle")
+            {
+                return "YellowTriangle";
+            }
+            else
+            {
+                return "YellowSquare";
+            }
+
+        }
+
         //色(Red、Blue、Yellow)と形(丸、三角、四角)はボタンで変える
         //丸はRedと相性がよく、三角はBlueと相性がよく、四角はYellowと相性がよい
         //
@@ -87,8 +127,6 @@ namespace UnityEngine.XR.ARFoundation.Samples
 
             if (m_RaycastManager.Raycast(touchPosition, s_Hits, TrackableType.PlaneWithinPolygon))
             {
-                // Raycast hits are sorted by distance, so the first one
-                // will be the closest hit.
                 var hitPose = s_Hits[0].pose;
                 Quaternion Fixminus = Quaternion.Euler(-90, 0, 0);
                 int paintSwitch = Random.Range(0, 2);
@@ -97,10 +135,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
-                    //if (paintScore > 100)
-                    //{
-                    //    m_PlacedPrefab.GetComponent<Renderer>().material.color = Color.blue;
-                    //}
+
                     if (hit.collider.CompareTag("paintPlane"))
                     {
 
@@ -108,43 +143,74 @@ namespace UnityEngine.XR.ARFoundation.Samples
                     else
                     {
                         paintScore += 1f;
-                        switch (paintSwitch)
+                        switch (CombineColorShape(m_Color, m_Shape))
                         {
-                            case 0:
+                            case "RedCircle":
                                 spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Red");
                                 break;
-                            case 1:
+                            case "RedTriangle":
                                 spawnedObject = Instantiate(m_PlacedPrefab1, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Red");
                                 break;
-                            case 2:
+                            case "RedSquare":
                                 spawnedObject = Instantiate(m_PlacedPrefab2, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Red");
+                                break;
+                            case "BlueCircle":
+                                spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Blue");
+                                break;
+                            case "BlueTriangle":
+                                spawnedObject = Instantiate(m_PlacedPrefab1, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Blue");
+                                break;
+                            case "BlueSquare":
+                                spawnedObject = Instantiate(m_PlacedPrefab2, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Blue");
+                                break;
+                            case "YellowCircle":
+                                spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Yellow");
+                                break;
+                            case "YellowTriangle":
+                                spawnedObject = Instantiate(m_PlacedPrefab1, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Yellow");
+                                break;
+                            case "YellowSquare":
+                                spawnedObject = Instantiate(m_PlacedPrefab2, hitPose.position, hitPose.rotation * Fixminus);
+                                spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Yellow");
                                 break;
                             default:
                                 break;
                         }
-                        if (spawnedObject.transform.localEulerAngles.z > 0f)//垂直の時
-                        {
-                            //spawnedObject.GetComponent<Renderer>().material.color = Color.blue;
-                            spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Blue");
-                        }
-                        else if(spawnedObject.transform.localEulerAngles.x > 0f)
-                        {
-                            //spawnedObject.GetComponent<Renderer>().material.color = Color.red;
-                            spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Red");
-                        }
+                        //switch (paintSwitch)
+                        //{
+                        //    case 0:
+                        //        spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation * Fixminus);
+                        //        break;
+                        //    case 1:
+                        //        spawnedObject = Instantiate(m_PlacedPrefab1, hitPose.position, hitPose.rotation * Fixminus);
+                        //        break;
+                        //    case 2:
+                        //        spawnedObject = Instantiate(m_PlacedPrefab2, hitPose.position, hitPose.rotation * Fixminus);
+                        //        break;
+                        //    default:
+                        //        break;
+                        //}
+
+                        //if (spawnedObject.transform.localEulerAngles.z > 0f)//垂直の時
+                        //{
+                        //    spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Blue");
+                        //}
+                        //else if(spawnedObject.transform.localEulerAngles.x > 0f)
+                        //{
+                        //    spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Red");
+                        //}
                     }
                 }
 
-                scoreText.text = spawnedObject.transform.localEulerAngles.ToString();
-
-                //if (spawnedObject == null)
-                //{
-                //    spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation);
-                //}
-                //else
-                //{
-                //    spawnedObject.transform.position = hitPose.position;
-                //}
+                scoreText.text = paintScore.ToString();
             }
         }
 
