@@ -30,6 +30,9 @@ namespace UnityEngine.XR.ARFoundation.Samples
         [SerializeField]
         Text scoreText;
 
+        //[SerializeField]
+        //ARPlaneManager arPlaneManager;
+        
         /// <summary>
         /// The prefab to instantiate on touch.
         /// </summary>
@@ -47,7 +50,6 @@ namespace UnityEngine.XR.ARFoundation.Samples
         void Awake()
         {
             m_RaycastManager = GetComponent<ARRaycastManager>();
-            m_PlacedPrefab.GetComponent<Renderer>().material.color = Color.red;
         }
 
         bool TryGetTouchPosition(out Vector2 touchPosition)
@@ -64,6 +66,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
 
         void Update()
         {
+            //PlaneDetectionMode currentDetectionMode = new ARPlaneManager().detectionMode;
             if (!TryGetTouchPosition(out Vector2 touchPosition))
                 return;
 
@@ -79,10 +82,10 @@ namespace UnityEngine.XR.ARFoundation.Samples
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
-                    if (paintScore > 100)
-                    {
-                        m_PlacedPrefab.GetComponent<Renderer>().material.color = Color.blue;
-                    }
+                    //if (paintScore > 100)
+                    //{
+                    //    m_PlacedPrefab.GetComponent<Renderer>().material.color = Color.blue;
+                    //}
                     if (hit.collider.CompareTag("paintPlane"))
                     {
 
@@ -104,12 +107,20 @@ namespace UnityEngine.XR.ARFoundation.Samples
                             default:
                                 break;
                         }
+                        if (spawnedObject.transform.localEulerAngles.z > 0f)//垂直の時
+                        {
+                            //spawnedObject.GetComponent<Renderer>().material.color = Color.blue;
+                            spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Blue");
+                        }
+                        else if(spawnedObject.transform.localEulerAngles.x > 0f)
+                        {
+                            //spawnedObject.GetComponent<Renderer>().material.color = Color.red;
+                            spawnedObject.GetComponent<Renderer>().material = Resources.Load<Material>("R_Materials/Red");
+                        }
                     }
-                    //spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation * Fixminus);
-
                 }
 
-                scoreText.text = paintScore.ToString();
+                scoreText.text = spawnedObject.transform.localEulerAngles.ToString();
 
                 //if (spawnedObject == null)
                 //{
